@@ -36,7 +36,7 @@ def get_gains(dir_x, dir_y):
     return G_xx, G_xy, G_yy, G_yx
 
 
-# Solving for correct stepsize with analytical model
+# Solving for correct step count with analytical model
 def solve_steps(Delta_x, Delta_y, G_xx, G_xy, G_yy, G_yx):
     b = (Delta_y / G_yy) - (G_xy*Delta_x)/(G_yy*G_xx)
     c = (G_xy*G_yx)/(G_yy*G_xx)
@@ -58,7 +58,7 @@ global_gain_first = 1
 global_gain_else = 0.8
 global_gain_shift = 0.4
 
-# Avoid too large steps - clip is max on actuator step size
+# Avoid too large steps - clip is max on actuator step count
 clip = 1000
 
 # Activate "JPE_cryopos" actuator script
@@ -101,7 +101,7 @@ while dist > goal_dist:
     Steps_x, Steps_y = solve_steps(Delta_x, Delta_y, G_xx, G_xy, G_yy, G_yx)
 
 
-    # First stepsize is one full 
+    # First amount of steps moved
     if rounds == 0:
         if abs(Steps_x) > 0:
             x_move = int(Steps_x*global_gain_first)
@@ -110,7 +110,7 @@ while dist > goal_dist:
             y_move = int(Steps_y*global_gain_first)
             print("Moving Y: %6d steps with initial gain of %3.2f" % (y_move, global_gain_first))
             
-    # Then scaled down stepsize
+    # Then scaled down step count
     else:
         if abs(int(Steps_x*global_gain_else)) > 0:
             x_move = int(Steps_x*global_gain_else)
@@ -119,7 +119,7 @@ while dist > goal_dist:
             y_move = int(Steps_y*global_gain_else)
             print("Moving Y: %6d steps with gain of %3.2f" % (y_move, global_gain_else))
     
-   # Scaling the stepsize even more down if there is a change in [+,-] direction        
+   # Scaling the step count even more down if there is a change in [+,-] direction        
     if old_x_move * x_move < 0:
         x_move = int(Steps_x*global_gain_shift)
         print("Moving X: %6d steps with reverse direction gain of %3.2f" % (x_move, global_gain_shift))
@@ -172,7 +172,7 @@ print("Done!")
 end_time = time.time()
 elapsed_time = end_time - start_time
 
-# Plot the step-size vs. loops
+# Plot the step counts vs. loops
 run = np.linspace(1, rounds, rounds)
 plt.plot(X, run, marker='o', linestyle='--', color='orange', label='X-steps')
 plt.plot(Y, run, marker='o', linestyle='--', color='green', label='Y-steps')
