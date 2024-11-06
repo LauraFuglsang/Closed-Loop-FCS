@@ -80,6 +80,8 @@ goal_dist = 0.2 # FCS req. 0.06
 X = []
 Y = []
 rounds = 0
+x_move = 0
+y_move = 0
 old_x_move = 0
 old_y_move = 0
 
@@ -139,6 +141,8 @@ while dist > goal_dist:
     	actuator.move(2, y_move, relative_step_size = 50)
 
     # Loop parameters
+    x_move += 1
+    y_move += 1
     old_x_move = x_move
     old_y_move = y_move
     rounds += 1
